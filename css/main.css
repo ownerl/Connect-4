@@ -1,3 +1,40 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
-    background-color: bisque;
+    /* viewport units: 100vh (viewport height), vw, 50vmin (minimum between vh & vw) */
+    height: 100vh;
+    margin: 0;
+    font-family: 'Rubik', sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+header {
+    font-size: 4vmin;
+    color: slategrey;
+    letter-spacing: 1vmin;
+}
+
+h1 {
+    color: slategray;
+    font-size: 3vmin;
+}
+
+#markers {
+    display: grid;
+    grid-template-columns: repeat(7, 10vmin);
+    gap: 1vmin;
+    margin-top: 1.5vmin;
+
+}
+
+#markers > div {
+    height: 10vmin;
+    border-width: 5vmin;
+    border-style: solid;
+    border-color: lightgray transparent transparent;
 }
