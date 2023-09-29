@@ -80,7 +80,7 @@ function renderMessage() {
     if (winner === 'T') {
         messageElement.innerHTML = `Stalemate! You're all losers`;
     } else if (winner) {
-        messageElement.innerHTML = `<span class="names" style="color: ${colours[turn]}">${players[winner]}</span> Wins!`
+        messageElement.innerHTML = `<span class="names" style="color: ${colours[winner]}">${players[winner]}</span> Wins!`
     } else {
         messageElement.innerHTML = `<span class="names" style="color: ${colours[turn]}">${players[turn]}</span>'s Turn!`
     }
@@ -128,7 +128,7 @@ function checkVerticalWin(colIndex, rowIndex) {
 
 function countAdjacent(colIndex, rowIndex, colOffset, rowOffset) {
     // Shortcut variable to player value of latest token played
-    const player = board[colIndex, rowIndex];
+    const currentPlayer = board[colIndex][rowIndex];
     // Track count of adjacent cells with the same player value
     let count = 0;
     // Initialize new coordinates (index numbers)
@@ -139,12 +139,14 @@ function countAdjacent(colIndex, rowIndex, colOffset, rowOffset) {
         // Ensure indexes are within bounds of the board array
         board[colIndex] !== undefined && 
         board[colIndex][rowIndex] !== undefined &&
-        board[colIndex][rowIndex] === player
+        board[colIndex][rowIndex] === currentPlayer
         ) {
             count ++;
             colIndex += colOffset;
             rowIndex += rowOffset;
     }
+    console.log(currentPlayer);
+    console.log(count);
     return count;
     
 }
