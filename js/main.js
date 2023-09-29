@@ -28,9 +28,13 @@ let winner = 'T'; // null = no winner, 1 or -1 player winner, 'T' tie
 /*---- cached elements  ----*/
 const messageElement = document.querySelector('h1');
 const playAgainButton = document.querySelector('button');
-const markerElements = document.querySelectorAll('#markers > div');
+const markerElements = [... document.querySelectorAll('#markers > div')];
 /*---- event listeners  ----*/
+document.getElementById('markers').addEventListener('click', handleDrop);
+playAgainButton.addEventListener('click', init);
+
 /*---- functions        ----*/
+init();
 
 // Initialize state and render
 function init() {
@@ -43,10 +47,16 @@ function init() {
         [0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0] // column 6 - top right most end
     ];
-
-    turn = 1;
+    
+    turn = goFirst();
     winner = null;
     render();
+}
+
+function goFirst(){
+    let turnValue = Math.random() * 10
+    let first = turnValue >= 5 ? 1 : -1;
+    return first;
 }
 
 function render() {
@@ -87,4 +97,25 @@ function renderControls() {
     })
 }
 
-init();
+
+// --------------  Event Listening Functions
+
+// In response to interaction, rerender everything impacted
+function handleDrop(event) {
+    const colIndex = markerElements.indexOf(event.target);
+    // Guard against unnecessary inputs like misclick
+    if (colIndex === -1) return;
+    const colArray = board[colIndex];
+    // find index of first 0 in column array
+    const rowIndex = colArray.indexOf(0);
+    // update board state with the current player's value
+    colArray[rowIndex] = turn;
+    // swap turns
+    turn *= -1;
+    winner = getWinner();
+    render();
+}
+
+function getWinner() {
+
+}
