@@ -47,7 +47,7 @@ function init() {
         [0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0] // column 6 - top right most end
     ];
-    
+
     turn = goFirst();
     winner = null;
     render();
@@ -105,6 +105,7 @@ function handleDrop(event) {
     const colIndex = markerElements.indexOf(event.target);
     // Guard against unnecessary inputs like misclick
     if (colIndex === -1) return;
+    // shortcut 
     const colArray = board[colIndex];
     // find index of first 0 in column array
     const rowIndex = colArray.indexOf(0);
@@ -112,10 +113,38 @@ function handleDrop(event) {
     colArray[rowIndex] = turn;
     // swap turns
     turn *= -1;
-    winner = getWinner();
+    winner = getWinner(colIndex, rowIndex);
+    console.log(winner);
     render();
 }
 
-function getWinner() {
+function getWinner(colIndex, rowIndex) {
+    return checkVerticalWin(colIndex, rowIndex);
+}
 
+function checkVerticalWin(colIndex, rowIndex) {
+    return countAdjacent(colIndex, rowIndex, 0, -1) === 3 ? board[colIndex][rowIndex] : null;
+}
+
+function countAdjacent(colIndex, rowIndex, colOffset, rowOffset) {
+    // Shortcut variable to player value of latest token played
+    const player = board[colIndex, rowIndex];
+    // Track count of adjacent cells with the same player value
+    let count = 0;
+    // Initialize new coordinates (index numbers)
+    
+    colIndex += colOffset;
+    rowIndex += rowOffset;
+    while (
+        // Ensure indexes are within bounds of the board array
+        board[colIndex] !== undefined && 
+        board[colIndex][rowIndex] !== undefined &&
+        board[colIndex][rowIndex] === player
+        ) {
+            count ++;
+            colIndex += colOffset;
+            rowIndex += rowOffset;
+    }
+    return count;
+    
 }
