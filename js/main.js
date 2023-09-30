@@ -24,7 +24,7 @@ const players = {
 /*---- state variables  ----*/
 let board; // 7x6 array
 let turn; // player 1 = 1, player 2 = -1
-let winner = 'T'; // null = no winner, 1 or -1 player winner, 'T' tie
+let winner = null; // null = no winner, 1 or -1 player winner, 'T' tie
 /*---- cached elements  ----*/
 const messageElement = document.querySelector('h1');
 const playAgainButton = document.querySelector('button');
@@ -114,12 +114,60 @@ function handleDrop(event) {
     // swap turns
     turn *= -1;
     winner = getWinner(colIndex, rowIndex);
-    console.log(winner);
+    console.log(winner + ' = winner');
     render();
 }
 
 function getWinner(colIndex, rowIndex) {
-    return checkVerticalWin(colIndex, rowIndex);
+    const vWin = checkVerticalWin(colIndex, rowIndex);
+    const hWin = checkHorizontallWin(colIndex, rowIndex);
+    const neWin = checkNorthEastWin(colIndex, rowIndex);
+    const nwWin = checkNorthWestWin(colIndex, rowIndex);
+    let isBoardFull = 1;
+    board.forEach(function(element) {
+        isBoardFull = element.find((zero) => zero === 0);
+    })
+
+    if (isBoardFull === undefined) {
+        return 'T';
+    } else if (vWin != null) {
+        return vWin;
+    } else if (hWin != null) {
+        return hWin;
+    } else if (neWin != null) {
+        return neWin;
+    } else if (nwWin != null) {
+        return nwWin;
+    } else {
+        return;
+    }
+}
+
+function checkNorthWestWin(colIndex, rowIndex) {
+    let nwUp = countAdjacent(colIndex, rowIndex, -1, 1);
+    console.log('northwest up' + nwUp);
+    let nwDown = countAdjacent(colIndex, rowIndex, 1, -1);
+    console.log('northwest down' + nwDown);
+    const northWestTotal = nwUp + nwDown;
+    return northWestTotal >= 3 ? board[colIndex][rowIndex] : null;
+}
+
+function checkNorthEastWin(colIndex, rowIndex) {
+    let neUp = countAdjacent(colIndex, rowIndex, 1, 1);
+    console.log('northeast up' + neUp);
+    let neDown = countAdjacent(colIndex, rowIndex, -1, -1);
+    console.log('northeast down' + neDown);
+    const northEastTotal = neUp + neDown;
+    return northEastTotal >= 3 ? board[colIndex][rowIndex] : null;
+}
+
+function checkHorizontallWin(colIndex, rowIndex) {
+    let adjacentLeft = countAdjacent(colIndex, rowIndex, -1, 0);
+    let adjacentRight = countAdjacent(colIndex, rowIndex, 1, 0);
+    const adjacentTotal = adjacentLeft + adjacentRight;
+    return adjacentTotal >= 3 ? board[colIndex][rowIndex] : null;
+    // all in one
+    // return countAdjacent(colIndex, rowIndex, -1, 0) +  countAdjacent(colIndex, rowIndex, 1, 0) >= 3 ? board[colIndex][rowIndex] : null;
 }
 
 function checkVerticalWin(colIndex, rowIndex) {
