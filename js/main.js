@@ -123,8 +123,11 @@ function getWinner(colIndex, rowIndex) {
     const hWin = checkHorizontallWin(colIndex, rowIndex);
     const neWin = checkNorthEastWin(colIndex, rowIndex);
     const nwWin = checkNorthWestWin(colIndex, rowIndex);
-    let isBoardFull = 1;
+
+    // check if there are no more empty slots
+    let isBoardFull = 0;
     board.forEach(function(element) {
+        // iterates through board array to find an empty slot (0). If none are found, returns undefined.
         isBoardFull = element.find((zero) => zero === 0);
     })
 
