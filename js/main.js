@@ -25,6 +25,7 @@ const players = {
 let board; // 7x6 array
 let turn; // player 1 = 1, player 2 = -1
 let winner = null; // null = no winner, 1 or -1 player winner, 'T' tie
+let count; // number of turns
 /*---- cached elements  ----*/
 const messageElement = document.querySelector('h1');
 const playAgainButton = document.querySelector('button');
@@ -50,6 +51,7 @@ function init() {
 
     turn = goFirst();
     winner = null;
+    count = 0;
     render();
 }
 
@@ -71,7 +73,7 @@ function renderBoard() {
             const cellId = `c${colIndex}r${rowIndex}`;
             const cellElement = document.getElementById(cellId);
             cellElement.style.backgroundColor = colours[cellValue];
-            console.log(cellElement);
+            //console.log(cellElement);
         })
     });
 }
@@ -114,7 +116,6 @@ function handleDrop(event) {
     // swap turns
     turn *= -1;
     winner = getWinner(colIndex, rowIndex);
-    console.log(winner + ' = winner');
     render();
 }
 
@@ -125,13 +126,24 @@ function getWinner(colIndex, rowIndex) {
     const nwWin = checkNorthWestWin(colIndex, rowIndex);
 
     // check if there are no more empty slots
-    let isBoardFull = 0;
-    board.forEach(function(element) {
-        // iterates through board array to find an empty slot (0). If none are found, returns undefined.
-        isBoardFull = element.find((zero) => zero === 0);
+    // let isBoardFull = 0;
+    // iterates through board array to find an empty slot (0). If none are found, returns undefined.
+    // isBoardFull = element.find((zero) => zero === 0);
+    // check if [0][5], [1][5],...,[6][5] are not 0 to see if full
+
+    // had bug, this is new tie solution based on turn counting
+    board.every(function(element) {
+        if (element.includes(1) || element.includes(-1)) {
+            count ++;
+            console.log(count + ' = number of turns')
+            return false;
+        } else {
+            return true;
+        }
     })
 
-    if (isBoardFull === undefined) {
+    //if (isBoardFull === undefined) {
+    if (count == 42) {
         return 'T';
     } else if (vWin != null) {
         return vWin;
@@ -148,18 +160,18 @@ function getWinner(colIndex, rowIndex) {
 
 function checkNorthWestWin(colIndex, rowIndex) {
     let nwUp = countAdjacent(colIndex, rowIndex, -1, 1);
-    console.log('northwest up' + nwUp);
+    //console.log('northwest up' + nwUp);
     let nwDown = countAdjacent(colIndex, rowIndex, 1, -1);
-    console.log('northwest down' + nwDown);
+    //console.log('northwest down' + nwDown);
     const northWestTotal = nwUp + nwDown;
     return northWestTotal >= 3 ? board[colIndex][rowIndex] : null;
 }
 
 function checkNorthEastWin(colIndex, rowIndex) {
     let neUp = countAdjacent(colIndex, rowIndex, 1, 1);
-    console.log('northeast up' + neUp);
+    //console.log('northeast up' + neUp);
     let neDown = countAdjacent(colIndex, rowIndex, -1, -1);
-    console.log('northeast down' + neDown);
+    //console.log('northeast down' + neDown);
     const northEastTotal = neUp + neDown;
     return northEastTotal >= 3 ? board[colIndex][rowIndex] : null;
 }
@@ -196,7 +208,7 @@ function countAdjacent(colIndex, rowIndex, colOffset, rowOffset) {
             colIndex += colOffset;
             rowIndex += rowOffset;
     }
-    console.log(currentPlayer);
+    //console.log(currentPlayer);
     console.log(count);
     return count;
     
